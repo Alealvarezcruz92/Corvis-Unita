@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Directorio Sociedad 80 - Corvis Unita</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --paper: #EEEAF2;
+    --panel: #FAF8FC;
+    --ink: #1E1B2E;
+    --muted: #5E5873;
+    --line: #CFC8DA;
+    --accent: #7B1E3B;
+    --accent-ink: #FFFFFF;
+    --teal: #2F5D62;
+    --error: #B3261E;
+    --display: "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", Georgia, serif;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --paper: #17141F;
+      --panel: #211D2C;
+      --ink: #ECE8F3;
+      --muted: #A9A2BC;
+      --line: #3A3447;
+      --accent: #D26A86;
+      --accent-ink: #1A1220;
+      --teal: #7FB3B8;
+      --error: #F2877F;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--paper); }
+  body {
+    margin: 0;
+    font-family: var(--body);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 40px 20px 72px; }
+
+  header.masthead { padding: 8px 0 36px; border-bottom: 2px solid var(--ink); margin-bottom: 36px; }
+  header.masthead h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 7vw, 4.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  header.masthead .sub {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(1.2rem, 3vw, 1.7rem);
+    color: var(--accent);
+    margin: 10px 0 0;
+  }
+  header.masthead p.intro { max-width: 56ch; color: var(--muted); margin: 18px 0 0; }
+
+  .layout { display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
+  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; gap: 28px; } }
+
+  /* Photo column */
+  .photo-col { position: sticky; top: 20px; }
+  @media (max-width: 760px) { .photo-col { position: static; } }
+  .frame {
+    aspect-ratio: 4 / 5;
+    width: 100%;
+    background: var(--panel);
+    border: 1.5px solid var(--ink);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .frame img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .frame.has-photo img { display: block; }
+  .frame .placeholder { text-align: center; padding: 20px; color: var(--muted); font-size: 0.92rem; }
+  .frame.has-photo .placeholder { display: none; }
+  .frame.invalid { border-color: var(--error); border-width: 2px; }
+  .photo-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .photo-note { font-size: 0.85rem; color: var(--muted); margin: 12px 0 0; }
+  .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 0.9rem; }
+  .check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); flex: none; }
+
+  /* Fields */
+  fieldset { border: 0; padding: 0; margin: 0 0 34px; }
+  legend {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 0 0 10px;
+    margin-bottom: 14px;
+    width: 100%;
+    border-bottom: 1px solid var(--line);
+  }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+  .field .hint { display: block; font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+  input[type="text"], input[type="tel"], input[type="date"], textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1.5px solid var(--line);
+    border-radius: 4px;
+    padding: 10px 12px;
+    min-height: 46px;
+  }
+  textarea { resize: vertical; min-height: 84px; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible {
+    outline: 3px solid var(--teal);
+    outline-offset: 2px;
+  }
+  input:focus, textarea:focus { border-color: var(--teal); }
+  .field.invalid input, .field.invalid textarea { border-color: var(--error); }
+  .err { color: var(--error); font-size: 0.85rem; margin-top: 4px; display: none; }
+  .invalid > .err, .frame-wrap.invalid .err { display: block; }
+
+  /* Buttons */
+  button, .btn {
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 10px 16px;
+    min-height: 44px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+  }
+  button:hover { background: var(--panel); }
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+    font-size: 1.05rem;
+    padding: 14px 26px;
+  }
+  button.primary:hover { filter: brightness(1.08); }
+  button:disabled { opacity: 0.55; cursor: progress; }
+  .submit-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .status { font-size: 0.92rem; color: var(--teal); min-height: 1.4em; margin-top: 12px; }
+  .status.bad { color: var(--error); }
+
+  /* Directory list */
+  section.directory { margin-top: 56px; padding-top: 28px; border-top: 2px solid var(--ink); }
+  section.directory h2 { font-family: var(--display); font-size: 1.9rem; margin: 0 0 6px; }
+  .dir-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .dir-head p { margin: 0; color: var(--muted); }
+  .empty { color: var(--muted); padding: 18px 0; }
+  .entry {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (max-width: 600px) { .entry { grid-template-columns: 56px 1fr; } .entry .acts { grid-column: 1 / -1; } }
+  .entry img { width: 64px; height: 80px; object-fit: cover; border: 1px solid var(--line); }
+  .entry .nm { font-family: var(--display); font-size: 1.2rem; font-weight: 700; }
+  .entry .meta { color: var(--muted); font-size: 0.9rem; }
+  .entry .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .entry .acts button { min-height: 38px; padding: 6px 12px; font-size: 0.9rem; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .entry.new { animation: flash 1.4s ease-out; }
+    @keyframes flash { from { background: color-mix(in srgb, var(--accent) 22%, transparent); } to { background: transparent; } }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <h1>Directorio Sociedad 80</h1>
+    <p class="sub">Corvis Unita</p>
+    <p class="intro">Llena tus datos para entrar al directorio. Al guardar, se descargan tu ficha en PDF y tu registro en Excel.</p>
+  </header>
+
+  <div class="layout">
+
+    <!-- Foto -->
+    <aside class="photo-col">
+      <div class="frame-wrap" id="frameWrap">
+        <div class="frame" id="frame">
+          <img id="preview" alt="Vista previa de tu fotografía">
+          <div class="placeholder">Aún no has agregado tu fotografía</div>
+        </div>
+        <div class="err" id="photoErr">Agrega una fotografía tuya.</div>
+      </div>
+      <div class="photo-actions">
+        <button type="button" id="btnCamera">Tomar foto</button>
+        <button type="button" id="btnGallery">Elegir de galería</button>
+      </div>
+      <input type="file" id="fileCamera" accept="image/*" capture="user" hidden>
+      <input type="file" id="fileGallery" accept="image/*" hidden>
+      <p class="photo-note">Usa una foto real y natural, de frente y con buena luz. No se aceptan imágenes generadas con IA.</p>
+      <label class="check">
+        <input type="checkbox" id="honest">
+        <span>Confirmo que es una foto real mía, sin IA y sin filtros.</span>
+      </label>
+      <div class="err" id="honestErr" style="display:none">Confirma que tu foto es real.</div>
+    </aside>
+
+    <!-- Campos -->
+    <main>
+      <fieldset>
+        <legend>Sobre ti</legend>
+        <div class="field" data-f="nombre">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" autocomplete="name">
+          <div class="err">Escribe tu nombre completo.</div>
+        </div>
+        <div class="field" data-f="apodo">
+          <label for="apodo">Seudónimo <span class="hint">¿Cómo te gusta que te llamen?</span></label>
+          <input type="text" id="apodo">
+          <div class="err">Escribe cómo te gusta que te llamen.</div>
+        </div>
+        <div class="field" data-f="nacimiento">
+          <label for="nacimiento">Fecha de nacimiento <span class="hint">Día, mes y año</span></label>
+          <input type="date" id="nacimiento" max="">
+          <div class="err">Elige tu fecha de nacimiento completa.</div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Contacto</legend>
+        <div class="row">
+          <div class="field" data-f="movil">
+            <label for="movil">Teléfono móvil</label>
+            <input type="tel" id="movil" autocomplete="tel" inputmode="tel">
+            <div class="err">Escribe un número de móvil válido.</div>
+          </div>
+          <div class="field" data-f="casa">
+            <label for="casa">Teléfono de casa</label>
+            <input type="tel" id="casa" inputmode="tel">
+            <div class="err">Escribe un número válido.</div>
+          </div>
+        </div>
+        <div class="field" data-f="domicilio">
+          <label for="domicilio">Domicilio actual <span class="hint">Calle, número, colonia, ciudad y código postal</span></label>
+          <textarea id="domicilio" autocomplete="street-address"></textarea>
+          <div class="err">Escribe tu domicilio actual.</div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Tu lugar en la sociedad</legend>
+        <div class="field" data-f="ocupacion">
+          <label for="ocupacion">Ocupación</label>
+          <input type="text" id="ocupacion">
+          <div class="err">Escribe tu ocupación.</div>
+        </div>
+        <div class="field" data-f="sociedad">
+          <label for="sociedad">Sociedad a la que perteneces</label>
+          <input type="text" id="sociedad">
+          <div class="err">Escribe tu sociedad.</div>
+        </div>
+        <div class="field" data-f="reto">
+          <label for="reto">Reto de impacto <span class="hint">Ejemplo: Stripper - Diva</span></label>
+          <input type="text" id="reto">
+          <div class="err">Escribe tu reto de impacto.</div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Quién te invitó</legend>
+        <div class="row">
+          <div class="field" data-f="invNombre">
+            <label for="invNombre">Nombre de quien te invitó</label>
+            <input type="text" id="invNombre">
+            <div class="err">Escribe el nombre de quien te invitó.</div>
+          </div>
+          <div class="field" data-f="invNumero">
+            <label for="invNumero">Número de quien te invitó</label>
+            <input type="tel" id="invNumero" inputmode="tel">
+            <div class="err">Escribe un número válido.</div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="submit-row">
+        <button type="button" class="primary" id="btnSave">Guardar y descargar PDF y Excel</button>
+      </div>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <section class="directory">
+    <div class="dir-head">
+      <div>
+        <h2>Registros de esta sesión</h2>
+        <p>Cada registro que guardes aparece aquí. Puedes volver a descargarlo.</p>
+      </div>
+      <button type="button" id="btnAllXlsx" disabled>Descargar Excel con todos</button>
+    </div>
+    <div id="list"><p class="empty">Todavía no hay registros guardados.</p></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var TITLE = "Directorio Sociedad 80 - Corvis Unita";
+  var records = [];
+  var photoData = null; // { dataUrl, w, h }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+
+  // Fecha máxima = hoy
+  var t = new Date();
+  $("nacimiento").max = t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
+
+  /* ---------- Foto ---------- */
+  $("btnCamera").onclick = function () { $("fileCamera").click(); };
+  $("btnGallery").onclick = function () { $("fileGallery").click(); };
+  $("fileCamera").onchange = $("fileGallery").onchange = function (e) {
+    var file = e.target.files && e.target.files[0];
+    if (file) loadPhoto(file);
+    e.target.value = "";
+  };
+
+  function loadPhoto(file) {
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      var max = 900, w = img.naturalWidth, h = img.naturalHeight;
+      var s = Math.min(1, max / Math.max(w, h));
+      var cw = Math.round(w * s), ch = Math.round(h * s);
+      var c = document.createElement("canvas");
+      c.width = cw; c.height = ch;
+      c.getContext("2d").drawImage(img, 0, 0, cw, ch);
+      photoData = { dataUrl: c.toDataURL("image/jpeg", 0.88), w: cw, h: ch };
+      URL.revokeObjectURL(url);
+      $("preview").src = photoData.dataUrl;
+      $("frame").classList.add("has-photo");
+      $("frame").classList.remove("invalid");
+      $("frameWrap").classList.remove("invalid");
+    };
+    img.onerror = function () { setStatus("No se pudo leer la imagen. Prueba con otra foto.", true); };
+    img.src = url;
+  }
+
+  /* ---------- Validación ---------- */
+  var phoneOk = function (v) { return v.replace(/\D/g, "").length >= 8; };
+  var rules = {
+    nombre: function (v) { return v.trim().split(/\s+/).length >= 2; },
+    apodo: function (v) { return v.trim().length > 0; },
+    nacimiento: function (v) { return /^\d{4}-\d{2}-\d{2}$/.test(v); },
+    movil: phoneOk,
+    casa: function (v) { return v.trim() === "" || phoneOk(v); },
+    domicilio: function (v) { return v.trim().length >= 6; },
+    ocupacion: function (v) { return v.trim().length > 0; },
+    sociedad: function (v) { return v.trim().length > 0; },
+    reto: function (v) { return v.trim().length > 0; },
+    invNombre: function (v) { return v.trim().length > 0; },
+    invNumero: phoneOk
+  };
+
+  function validate() {
+    var firstBad = null, ok = true;
+    if (!photoData) {
+      ok = false; firstBad = $("frame");
+      $("frame").classList.add("invalid"); $("frameWrap").classList.add("invalid");
+    }
+    if (!$("honest").checked) {
+      ok = false; $("honestErr").style.display = "block"; firstBad = firstBad || $("honest");
+    } else { $("honestErr").style.display = "none"; }
+    Object.keys(rules).forEach(function (k) {
+      var el = $(k), wrap = el.closest(".field");
+      var good = rules[k](el.value);
+      wrap.classList.toggle("invalid", !good);
+      if (!good) { ok = false; firstBad = firstBad || el; }
+    });
+    if (firstBad) {
+      firstBad.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (firstBad.focus && firstBad.tagName !== "DIV") firstBad.focus({ preventScroll: true });
+    }
+    return ok;
+  }
+
+  Object.keys(rules).forEach(function (k) {
+    $(k).addEventListener("input", function () {
+      if (rules[k]($(k).value)) $(k).closest(".field").classList.remove("invalid");
+    });
+  });
+  $("honest").addEventListener("change", function () {
+    if ($("honest").checked) $("honestErr").style.display = "none";
+  });
+
+  /* ---------- Utilidades ---------- */
+  function fechaLarga(iso) {
+    if (!iso) return "";
+    var p = iso.split("-");
+    return parseInt(p[2], 10) + " de " + MESES[parseInt(p[1], 10) - 1] + " de " + p[0];
+  }
+  function slug(s) {
+    return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_|_$/g, "") || "registro";
+  }
+  function setStatus(msg, bad) {
+    var s = $("status"); s.textContent = msg; s.classList.toggle("bad", !!bad);
+  }
+  function collect() {
+    var g = function (k) { return $(k).value.trim(); };
+    return {
+      id: Date.now(),
+      foto: photoData,
+      nombre: g("nombre"), apodo: g("apodo"),
+      nacimiento: g("nacimiento"), nacimientoTexto: fechaLarga(g("nacimiento")),
+      movil: g("movil"), casa: g("casa"),
+      domicilio: g("domicilio"), ocupacion: g("ocupacion"),
+      invNombre: g("invNombre"), invNumero: g("invNumero"),
+      sociedad: g("sociedad"), reto: g("reto"),
+      registrado: new Date().toLocaleString("es-MX")
+    };
+  }
+
+  /* ---------- Excel ---------- */
+  var HEADERS = ["Nombre completo","Seudónimo","Fecha de nacimiento","Teléfono móvil","Teléfono de casa",
+                 "Domicilio actual","Ocupación","Nombre de quien invitó","Número de quien invitó",
+                 "Sociedad","Reto de impacto","Fecha de registro"];
+  function rowOf(r) {
+    return [r.nombre, r.apodo, r.nacimientoTexto, r.movil, r.casa || "", r.domicilio, r.ocupacion,
+            r.invNombre, r.invNumero, r.sociedad, r.reto, r.registrado];
+  }
+  function writeXlsx(rows, filename) {
+    var ws = XLSX.utils.aoa_to_sheet([HEADERS].concat(rows));
+    ws["!cols"] = [28,18,24,16,16,40,22,26,20,22,26,20].map(function (w) { return { wch: w }; });
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Directorio");
+    XLSX.writeFile(wb, filename);
+  }
+  function downloadXlsx(r) { writeXlsx([rowOf(r)], "Directorio_Sociedad80_" + slug(r.nombre) + ".xlsx"); }
+  function downloadAllXlsx() { writeXlsx(records.map(rowOf), "Directorio_Sociedad80_completo.xlsx"); }
+
+  /* ---------- PDF ---------- */
+  function downloadPdf(r) {
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({ unit: "mm", format: "a4" });
+    var W = 210, M = 16;
+    var ACC = [123, 30, 59], INK = [30, 27, 46], MUT = [94, 88, 115];
+
+    // Encabezado
+    doc.setFillColor(ACC[0], ACC[1], ACC[2]);
+    doc.rect(0, 0, W, 36, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("times", "bold"); doc.setFontSize(24);
+    doc.text("Directorio Sociedad 80", M, 18);
+    doc.setFont("times", "italic"); doc.setFontSize(15);
+    doc.text("Corvis Unita", M, 27);
+
+    // Foto (4:5, ajustada sin deformar)
+    var bx = M, by = 46, bw = 56, bh = 70;
+    doc.setDrawColor(INK[0], INK[1], INK[2]); doc.setLineWidth(0.4);
+    doc.rect(bx, by, bw, bh);
+    if (r.foto) {
+      var ratio = r.foto.w / r.foto.h, pw = bw, ph = bw / ratio;
+      if (ph > bh) { ph = bh; pw = bh * ratio; }
+      doc.addImage(r.foto.dataUrl, "JPEG", bx + (bw - pw) / 2, by + (bh - ph) / 2, pw, ph);
+    }
+
+    // Datos junto a la foto
+    var x = bx + bw + 12, colW = W - M - x, y = by + 4;
+    function field(px, py, w, label, value) {
+      doc.setFont("helvetica", "bold"); doc.setFontSize(8.5);
+      doc.setTextColor(MUT[0], MUT[1], MUT[2]);
+      doc.text(label, px, py);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(11.5);
+      doc.setTextColor(INK[0], INK[1], INK[2]);
+      var lines = doc.splitTextToSize(value || "-", w);
+      doc.text(lines, px, py + 5.5);
+      return py + 5.5 + lines.length * 5 + 5;
+    }
+    doc.setFont("times", "bold"); doc.setFontSize(18);
+    doc.setTextColor(INK[0], INK[1], INK[2]);
+    var nl = doc.splitTextToSize(r.nombre, colW);
+    doc.text(nl, x, y + 4);
+    y += nl.length * 7.5 + 2;
+    doc.setFont("times", "italic"); doc.setFontSize(13);
+    doc.setTextColor(ACC[0], ACC[1], ACC[2]);
+    doc.text("Seudónimo: " + r.apodo, x, y + 3);
+    y += 12;
+    y = field(x, y, colW, "Fecha de nacimiento", r.nacimientoTexto);
+    y = field(x, y, colW, "Ocupación", r.ocupacion);
+
+    // Resto de campos
+    var cy = Math.max(by + bh, y) + 10;
+    doc.setDrawColor(207, 200, 218); doc.setLineWidth(0.3);
+    doc.line(M, cy - 5, W - M, cy - 5);
+    var half = (W - 2 * M - 10) / 2;
+    var a = field(M, cy, half, "Teléfono móvil", r.movil);
+    var b = field(M + half + 10, cy, half, "Teléfono de casa", r.casa);
+    cy = Math.max(a, b);
+    cy = field(M, cy, W - 2 * M, "Domicilio actual", r.domicilio);
+    a = field(M, cy, half, "Sociedad", r.sociedad);
+    b = field(M + half + 10, cy, half, "Reto de impacto", r.reto);
+    cy = Math.max(a, b);
+    doc.line(M, cy - 2, W - M, cy - 2);
+    cy += 4;
+    a = field(M, cy, half, "Invitó (nombre)", r.invNombre);
+    b = field(M + half + 10, cy, half, "Invitó (número)", r.invNumero);
+
+    // Pie
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
+    doc.setTextColor(MUT[0], MUT[1], MUT[2]);
+    doc.text(TITLE + "  |  Registrado el " + r.registrado, M, 288);
+
+    doc.save("Directorio_Sociedad80_" + slug(r.nombre) + ".pdf");
+  }
+
+  /* ---------- Lista ---------- */
+  function renderList(newId) {
+    var list = $("list");
+    list.innerHTML = "";
+    $("btnAllXlsx").disabled = records.length === 0;
+    if (!records.length) {
+      var p = document.createElement("p"); p.className = "empty";
+      p.textContent = "Todavía no hay registros guardados."; list.appendChild(p); return;
+    }
+    records.slice().reverse().forEach(function (r) {
+      var e = document.createElement("div"); e.className = "entry" + (r.id === newId ? " new" : "");
+      var img = document.createElement("img"); img.src = r.foto.dataUrl; img.alt = "Foto de " + r.nombre;
+      var info = document.createElement("div");
+      var nm = document.createElement("div"); nm.className = "nm"; nm.textContent = r.nombre;
+      var mt = document.createElement("div"); mt.className = "meta";
+      mt.textContent = r.apodo + " - " + r.ocupacion + " - " + r.sociedad;
+      info.appendChild(nm); info.appendChild(mt);
+      var acts = document.createElement("div"); acts.className = "acts";
+      var bp = document.createElement("button"); bp.type = "button"; bp.textContent = "PDF";
+      bp.onclick = function () { downloadPdf(r); };
+      var bx = document.createElement("button"); bx.type = "button"; bx.textContent = "Excel";
+      bx.onclick = function () { downloadXlsx(r); };
+      acts.appendChild(bp); acts.appendChild(bx);
+      e.appendChild(img); e.appendChild(info); e.appendChild(acts);
+      list.appendChild(e);
+    });
+  }
+
+  /* ---------- Guardar ---------- */
+  function resetForm() {
+    ["nombre","apodo","nacimiento","movil","casa","domicilio","ocupacion","sociedad","reto","invNombre","invNumero"]
+      .forEach(function (k) { $(k).value = ""; });
+    $("honest").checked = false;
+    photoData = null; $("preview").removeAttribute("src");
+    $("frame").classList.remove("has-photo");
+  }
+
+  $("btnSave").onclick = function () {
+    setStatus("");
+    if (!validate()) { setStatus("Revisa los campos marcados en rojo.", true); return; }
+    if (!window.jspdf || !window.XLSX) {
+      setStatus("No se cargaron las librerías de PDF y Excel. Revisa tu conexión a internet y recarga la página.", true);
+      return;
+    }
+    var btn = $("btnSave"); btn.disabled = true;
+    var r = collect();
+    try {
+      downloadPdf(r);
+      setTimeout(function () {
+        try { downloadXlsx(r); } catch (err) { setStatus("El PDF se descargó, pero falló el Excel: " + err.message, true); }
+        records.push(r);
+        renderList(r.id);
+        resetForm();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (!$("status").classList.contains("bad")) setStatus("Listo. Se guardó el registro de " + r.apodo + " y se descargaron el PDF y el Excel.");
+        btn.disabled = false;
+      }, 600);
+    } catch (err) {
+      setStatus("No se pudo crear el PDF: " + err.message, true);
+      btn.disabled = false;
+    }
+  };
+
+  $("btnAllXlsx").onclick = function () { if (records.length) downloadAllXlsx(); };
+})();
+</script>
+</body>
+</html>
