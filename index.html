@@ -2,587 +2,810 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Directorio Sociedad 80 - Corvis Unita</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Edier & Ángela Rocío — 12 de diciembre 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --paper: #EEEAF2;
-    --panel: #FAF8FC;
-    --ink: #1E1B2E;
-    --muted: #5E5873;
-    --line: #CFC8DA;
-    --accent: #7B1E3B;
-    --accent-ink: #FFFFFF;
-    --teal: #2F5D62;
-    --error: #B3261E;
-    --display: "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", Georgia, serif;
-    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      color-scheme: dark;
-      --paper: #17141F;
-      --panel: #211D2C;
-      --ink: #ECE8F3;
-      --muted: #A9A2BC;
-      --line: #3A3447;
-      --accent: #D26A86;
-      --accent-ink: #1A1220;
-      --teal: #7FB3B8;
-      --error: #F2877F;
-    }
-  }
-  * { box-sizing: border-box; }
-  html { background: var(--paper); }
-  body {
-    margin: 0;
-    font-family: var(--body);
-    color: var(--ink);
-    background: var(--paper);
-    line-height: 1.5;
-  }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 40px 20px 72px; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  header.masthead { padding: 8px 0 36px; border-bottom: 2px solid var(--ink); margin-bottom: 36px; }
-  header.masthead h1 {
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(2.4rem, 7vw, 4.6rem);
-    line-height: 1.02;
-    letter-spacing: -0.02em;
-    margin: 0;
-  }
-  header.masthead .sub {
-    font-family: var(--display);
-    font-style: italic;
-    font-size: clamp(1.2rem, 3vw, 1.7rem);
-    color: var(--accent);
-    margin: 10px 0 0;
-  }
-  header.masthead p.intro { max-width: 56ch; color: var(--muted); margin: 18px 0 0; }
+html { font-size: 16px; }
 
-  .layout { display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
-  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; gap: 28px; } }
+body {
+  font-family: 'Lato', sans-serif;
+  background: #d6cdb8;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 12px 48px;
+}
 
-  /* Photo column */
-  .photo-col { position: sticky; top: 20px; }
-  @media (max-width: 760px) { .photo-col { position: static; } }
-  .frame {
-    aspect-ratio: 4 / 5;
-    width: 100%;
-    background: var(--panel);
-    border: 1.5px solid var(--ink);
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    position: relative;
-  }
-  .frame img { width: 100%; height: 100%; object-fit: cover; display: none; }
-  .frame.has-photo img { display: block; }
-  .frame .placeholder { text-align: center; padding: 20px; color: var(--muted); font-size: 0.92rem; }
-  .frame.has-photo .placeholder { display: none; }
-  .frame.invalid { border-color: var(--error); border-width: 2px; }
-  .photo-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-  .photo-note { font-size: 0.85rem; color: var(--muted); margin: 12px 0 0; }
-  .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 0.9rem; }
-  .check input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); flex: none; }
+/* ── Card ── */
+.card {
+  background: #f7f2e3;
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+}
 
-  /* Fields */
-  fieldset { border: 0; padding: 0; margin: 0 0 34px; }
-  legend {
-    font-family: var(--display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    padding: 0 0 10px;
-    margin-bottom: 14px;
-    width: 100%;
-    border-bottom: 1px solid var(--line);
-  }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
-  .field { margin-bottom: 16px; }
-  .field label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
-  .field .hint { display: block; font-weight: 400; color: var(--muted); font-size: 0.85rem; }
-  input[type="text"], input[type="tel"], input[type="date"], textarea {
-    width: 100%;
-    font: inherit;
-    color: var(--ink);
-    background: var(--panel);
-    border: 1.5px solid var(--line);
-    border-radius: 4px;
-    padding: 10px 12px;
-    min-height: 46px;
-  }
-  textarea { resize: vertical; min-height: 84px; }
-  input:focus-visible, textarea:focus-visible, button:focus-visible {
-    outline: 3px solid var(--teal);
-    outline-offset: 2px;
-  }
-  input:focus, textarea:focus { border-color: var(--teal); }
-  .field.invalid input, .field.invalid textarea { border-color: var(--error); }
-  .err { color: var(--error); font-size: 0.85rem; margin-top: 4px; display: none; }
-  .invalid > .err, .frame-wrap.invalid .err { display: block; }
+/* ── Gold frame: CSS border approach, always fits ── */
+.card-inner {
+  margin: 18px;
+  border: 1px solid rgba(184,148,58,0.65);
+  position: relative;
+}
+.card-inner::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 0.5px solid rgba(184,148,58,0.32);
+  pointer-events: none;
+  z-index: 0;
+}
+/* Geometric corner cuts via clip-path on card */
+.card {
+  clip-path: polygon(
+    28px 0%, calc(100% - 28px) 0%,
+    100% 28px, 100% calc(100% - 28px),
+    calc(100% - 28px) 100%, 28px 100%,
+    0% calc(100% - 28px), 0% 28px
+  );
+}
 
-  /* Buttons */
-  button, .btn {
-    font: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 10px 16px;
-    min-height: 44px;
-    border: 1.5px solid var(--ink);
-    background: transparent;
-    color: var(--ink);
-  }
-  button:hover { background: var(--panel); }
-  button.primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-ink);
-    font-size: 1.05rem;
-    padding: 14px 26px;
-  }
-  button.primary:hover { filter: brightness(1.08); }
-  button:disabled { opacity: 0.55; cursor: progress; }
-  .submit-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-  .status { font-size: 0.92rem; color: var(--teal); min-height: 1.4em; margin-top: 12px; }
-  .status.bad { color: var(--error); }
+/* ── Content ── */
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: clamp(28px, 7vw, 52px) clamp(20px, 7vw, 48px) clamp(28px, 7vw, 52px);
+}
 
-  /* Directory list */
-  section.directory { margin-top: 56px; padding-top: 28px; border-top: 2px solid var(--ink); }
-  section.directory h2 { font-family: var(--display); font-size: 1.9rem; margin: 0 0 6px; }
-  .dir-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
-  .dir-head p { margin: 0; color: var(--muted); }
-  .empty { color: var(--muted); padding: 18px 0; }
-  .entry {
-    display: grid;
-    grid-template-columns: 64px 1fr auto;
-    gap: 16px;
-    align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  @media (max-width: 600px) { .entry { grid-template-columns: 56px 1fr; } .entry .acts { grid-column: 1 / -1; } }
-  .entry img { width: 64px; height: 80px; object-fit: cover; border: 1px solid var(--line); }
-  .entry .nm { font-family: var(--display); font-size: 1.2rem; font-weight: 700; }
-  .entry .meta { color: var(--muted); font-size: 0.9rem; }
-  .entry .acts { display: flex; gap: 8px; flex-wrap: wrap; }
-  .entry .acts button { min-height: 38px; padding: 6px 12px; font-size: 0.9rem; }
+/* ── Title ── */
+.main-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(38px, 11vw, 54px);
+  color: #3a5230;
+  line-height: 1.1;
+  margin-bottom: 0;
+}
 
-  @media (prefers-reduced-motion: no-preference) {
-    .entry.new { animation: flash 1.4s ease-out; }
-    @keyframes flash { from { background: color-mix(in srgb, var(--accent) 22%, transparent); } to { background: transparent; } }
-  }
+/* ── Ornaments ── */
+.ornament {
+  display: block;
+  margin: 0 auto;
+  max-width: 160px;
+  width: 60%;
+}
+
+/* ── Intro text ── */
+.intro-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(13px, 3.5vw, 16px);
+  font-weight: 300;
+  color: #4a5c38;
+  line-height: 1.85;
+  margin-bottom: 18px;
+}
+
+/* ── Names ── */
+.name-primary, .name-secondary {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(40px, 12vw, 60px);
+  color: #3a5230;
+  line-height: 1.1;
+  display: block;
+  word-break: break-word;
+}
+.name-connector {
+  display: block;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(22px, 6vw, 32px);
+  color: #b8943a;
+  margin: -2px 0;
+}
+.name-secondary { margin-bottom: 14px; }
+
+/* ── Verse ── */
+.verse-block { margin: 4px 0 18px; }
+.verse-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(13px, 3.5vw, 15px);
+  color: #4a5c38;
+  line-height: 1.85;
+  margin-bottom: 4px;
+}
+.verse-ref {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(11px, 3vw, 13px);
+  color: #7a8c5a;
+}
+
+/* ── Leaf divider ── */
+.leaf-divider {
+  display: block;
+  margin: 14px auto;
+  max-width: 140px;
+  width: 50%;
+}
+
+/* ── Galería carrusel ── */
+.galeria-section {
+  margin: 4px 0;
+}
+.galeria-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(16px, 4.5vw, 20px);
+  font-weight: 400;
+  font-style: italic;
+  color: #3a5230;
+  margin-bottom: 14px;
+}
+.carrusel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #e8e0cc;
+}
+.carrusel-track {
+  display: flex;
+  transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+}
+.carrusel-slide {
+  min-width: 100%;
+}
+.carrusel-slide img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+.carrusel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(247,242,227,0.85);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  touch-action: manipulation;
+  transition: background 0.2s;
+}
+.carrusel-btn:hover, .carrusel-btn:active { background: rgba(247,242,227,1); }
+.carrusel-btn.prev { left: 10px; }
+.carrusel-btn.next { right: 10px; }
+.carrusel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.carrusel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b8c8a0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.carrusel-dot.active {
+  background: #3a5230;
+  transform: scale(1.3);
+}
+
+/* ── Details block ── */
+.details-block {
+  background: rgba(58,82,48,0.05);
+  border: 0.5px solid rgba(58,82,48,0.2);
+  border-radius: 2px;
+  padding: clamp(14px, 4vw, 20px) clamp(12px, 4vw, 20px);
+  margin-bottom: 14px;
+  text-align: left;
+}
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.detail-row:last-child { margin-bottom: 0; }
+.detail-icon { flex-shrink: 0; margin-top: 2px; }
+.detail-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(11px, 3vw, 13px);
+  color: #7a8c5a;
+  display: block;
+  margin-bottom: 1px;
+}
+.detail-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(14px, 4vw, 17px);
+  font-weight: 500;
+  color: #3a5230;
+  line-height: 1.4;
+}
+
+/* ── Map button ── */
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(10px, 2.5vw, 12px);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a5230;
+  text-decoration: none;
+  border: 0.5px solid #3a5230;
+  padding: 10px 20px;
+  border-radius: 1px;
+  margin-top: 14px;
+  width: 100%;
+  transition: background 0.2s, color 0.2s;
+}
+.map-link:hover, .map-link:active { background: #3a5230; color: #f7f2e3; }
+
+/* ── Lluvia de sobres ── */
+.sobres-block {
+  background: rgba(184,148,58,0.07);
+  border: 0.5px solid rgba(184,148,58,0.35);
+  border-radius: 2px;
+  padding: clamp(14px, 4vw, 20px);
+  margin: 4px 0 0;
+  text-align: center;
+}
+.sobres-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(16px, 4.5vw, 20px);
+  font-weight: 500;
+  color: #b8943a;
+  margin: 8px 0 6px;
+}
+.sobres-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(13px, 3.5vw, 15px);
+  color: #4a5c38;
+  line-height: 1.75;
+}
+
+/* ── Esperamos ── */
+.esperamos {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(26px, 7.5vw, 36px);
+  color: #3a5230;
+  margin-top: 6px;
+}
+
+/* ── Countdown ── */
+.countdown { margin: 16px 0; }
+.countdown-label {
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(9px, 2.5vw, 11px);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #7a8c5a;
+  margin-bottom: 10px;
+}
+.countdown-grid {
+  display: flex;
+  justify-content: center;
+  gap: clamp(10px, 4vw, 20px);
+}
+.cd-unit { text-align: center; }
+.cd-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 9vw, 40px);
+  font-weight: 400;
+  color: #3a5230;
+  line-height: 1;
+  display: block;
+}
+.cd-lbl {
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(8px, 2.2vw, 10px);
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #7a8c5a;
+  margin-top: 4px;
+}
+.cd-sep {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 6vw, 30px);
+  color: #b8943a;
+  align-self: flex-start;
+  padding-top: 2px;
+}
+
+/* ── RSVP ── */
+.rsvp-section { margin-top: 14px; }
+.rsvp-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 400;
+  color: #3a5230;
+  margin-bottom: 4px;
+}
+.rsvp-sub {
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(10px, 2.8vw, 12px);
+  font-weight: 300;
+  color: #7a8c5a;
+  margin-bottom: 4px;
+}
+.deadline-badge {
+  display: inline-block;
+  background: rgba(58,82,48,0.08);
+  color: #4a5c38;
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(9px, 2.5vw, 11px);
+  letter-spacing: 0.08em;
+  padding: 5px 12px;
+  border-radius: 1px;
+  margin-bottom: 18px;
+}
+
+.field-group { margin-bottom: 12px; text-align: left; }
+label {
+  display: block;
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(9px, 2.5vw, 11px);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #7a8c5a;
+  margin-bottom: 6px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 13px 14px;
+  font-family: 'Lato', sans-serif;
+  font-size: 16px; /* 16px prevents iOS zoom */
+  font-weight: 300;
+  color: #3a5230;
+  background: #fff;
+  border: 0.5px solid #b8c8a0;
+  border-radius: 1px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.2s;
+}
+input[type="text"]:focus { border-color: #3a5230; }
+
+/* Radio buttons: stacked on mobile for better tap targets */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  border: 0.5px solid #b8c8a0;
+  border-radius: 1px;
+  overflow: hidden;
+}
+.radio-opt { position: relative; }
+.radio-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+.radio-opt label {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(12px, 3.5vw, 14px);
+  letter-spacing: 0.05em;
+  color: #7a8c5a;
+  background: #fff;
+  border-bottom: 0.5px solid #b8c8a0;
+  text-transform: none;
+  margin: 0;
+  transition: background 0.15s, color 0.15s;
+  gap: 10px;
+}
+.radio-opt:last-child label { border-bottom: none; }
+
+/* Custom radio circle */
+.radio-opt label::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #b8c8a0;
+  background: white;
+  transition: border-color 0.15s, background 0.15s;
+}
+.radio-opt input[type="radio"]:checked + label {
+  background: rgba(58,82,48,0.06);
+  color: #3a5230;
+  font-weight: 400;
+}
+.radio-opt input[type="radio"]:checked + label::before {
+  border-color: #3a5230;
+  background: #3a5230;
+  box-shadow: inset 0 0 0 3px #f7f2e3;
+}
+
+.error-msg { font-size: 11px; color: #8b4513; margin-top: 5px; display: none; }
+.error-msg.visible { display: block; }
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: #3a5230;
+  color: #f7f2e3;
+  border: none;
+  border-radius: 1px;
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(11px, 3vw, 13px);
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.2s;
+  touch-action: manipulation;
+}
+.submit-btn:hover, .submit-btn:active { background: #b8943a; }
+
+/* ── Success ── */
+.success-msg {
+  display: none;
+  text-align: center;
+  padding: 32px 16px;
+  background: rgba(58,82,48,0.06);
+  border: 0.5px solid rgba(58,82,48,0.2);
+  border-radius: 2px;
+}
+.success-msg.visible { display: block; }
+.success-check {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid #3a5230;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px;
+}
+.success-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(28px, 8vw, 36px);
+  color: #3a5230;
+  margin-bottom: 8px;
+}
+.success-text {
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(12px, 3.2vw, 14px);
+  font-weight: 300;
+  color: #4a5c38;
+  line-height: 1.8;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 18px 0 20px;
+  border-top: 0.5px solid rgba(58,82,48,0.2);
+  margin-top: 24px;
+}
+.footer-names {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(20px, 5.5vw, 26px);
+  color: #3a5230;
+  margin-bottom: 4px;
+}
+.footer-date {
+  font-family: 'Lato', sans-serif;
+  font-size: clamp(9px, 2.5vw, 11px);
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  color: #7a8c5a;
+}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="card">
+  <div class="card-inner">
+    <div class="content">
 
-  <header class="masthead">
-    <h1>Directorio Sociedad 80</h1>
-    <p class="sub">Corvis Unita</p>
-    <p class="intro">Llena tus datos para entrar al directorio. Al guardar, se descargan tu ficha en PDF y tu registro en Excel.</p>
-  </header>
+      <!-- Gold ornament top -->
+      <svg class="ornament" style="margin-bottom:12px" height="24" viewBox="0 0 160 24" aria-hidden="true">
+        <line x1="0" y1="12" x2="58" y2="12" stroke="#b8943a" stroke-width="0.8" opacity="0.7"/>
+        <path d="M68 12 Q75 4 80 12 Q85 20 92 12" fill="none" stroke="#b8943a" stroke-width="0.8" opacity="0.8"/>
+        <circle cx="80" cy="12" r="2" fill="#b8943a" opacity="0.6"/>
+        <line x1="102" y1="12" x2="160" y2="12" stroke="#b8943a" stroke-width="0.8" opacity="0.7"/>
+      </svg>
 
-  <div class="layout">
+      <h1 class="main-title">Nuestra Boda</h1>
 
-    <!-- Foto -->
-    <aside class="photo-col">
-      <div class="frame-wrap" id="frameWrap">
-        <div class="frame" id="frame">
-          <img id="preview" alt="Vista previa de tu fotografía">
-          <div class="placeholder">Aún no has agregado tu fotografía</div>
-        </div>
-        <div class="err" id="photoErr">Agrega una fotografía tuya.</div>
+      <svg class="ornament" style="margin-top:6px;margin-bottom:18px" height="18" viewBox="0 0 120 18" aria-hidden="true">
+        <path d="M10 9 Q30 2 60 9 Q90 16 110 9" fill="none" stroke="#b8943a" stroke-width="0.8" opacity="0.6"/>
+        <circle cx="60" cy="9" r="2.5" fill="none" stroke="#b8943a" stroke-width="0.7" opacity="0.7"/>
+      </svg>
+
+      <p class="intro-text">
+        Dos caminos que Dios unió en uno solo.<br>
+        Hoy queremos que seas parte<br>
+        de este nuevo comienzo.
+      </p>
+
+      <span class="name-primary">Edier Ruiz</span>
+      <span class="name-connector">&amp;</span>
+      <span class="name-secondary">Ángela Rocío Cruz</span>
+
+      <!-- Leaf divider -->
+      <svg class="leaf-divider" height="20" viewBox="0 0 140 20" aria-hidden="true">
+        <line x1="0" y1="10" x2="48" y2="10" stroke="#b8943a" stroke-width="0.7" opacity="0.6"/>
+        <ellipse cx="60" cy="10" rx="8" ry="4" fill="#5a7840" opacity="0.7" transform="rotate(-10 60 10)"/>
+        <ellipse cx="70" cy="10" rx="7" ry="3.5" fill="#7a9a58" opacity="0.65" transform="rotate(8 70 10)"/>
+        <circle cx="65" cy="10" r="2" fill="#b8943a" opacity="0.5"/>
+        <line x1="92" y1="10" x2="140" y2="10" stroke="#b8943a" stroke-width="0.7" opacity="0.6"/>
+      </svg>
+
+      <!-- Versículo -->
+      <div class="verse-block">
+        <p class="verse-text">
+          "Así que no son ya más dos, sino una sola carne;<br>
+          por tanto, lo que Dios juntó,<br>
+          no lo separe el hombre."
+        </p>
+        <span class="verse-ref">San Mateo 19:6</span>
       </div>
-      <div class="photo-actions">
-        <button type="button" id="btnCamera">Tomar foto</button>
-        <button type="button" id="btnGallery">Elegir de galería</button>
+
+      <!-- Leaf divider -->
+      <svg class="leaf-divider" height="20" viewBox="0 0 140 20" aria-hidden="true">
+        <line x1="0" y1="10" x2="48" y2="10" stroke="#b8943a" stroke-width="0.7" opacity="0.6"/>
+        <ellipse cx="60" cy="10" rx="8" ry="4" fill="#5a7840" opacity="0.7" transform="rotate(-10 60 10)"/>
+        <ellipse cx="70" cy="10" rx="7" ry="3.5" fill="#7a9a58" opacity="0.65" transform="rotate(8 70 10)"/>
+        <circle cx="65" cy="10" r="2" fill="#b8943a" opacity="0.5"/>
+        <line x1="92" y1="10" x2="140" y2="10" stroke="#b8943a" stroke-width="0.7" opacity="0.6"/>
+      </svg>
+
+      <!-- RSVP -->
+      <div class="rsvp-section">
+        <h2 class="rsvp-title">Confirma tu asistencia</h2>
+        <p class="rsvp-sub">Nos encantaría saber si nos acompañas</p>
+        <span class="deadline-badge">Antes del 4 de diciembre de 2026</span>
+
+        <div id="rsvp-form">
+          <div class="field-group">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" placeholder="Tu nombre y apellido" autocomplete="name">
+            <div class="error-msg" id="err-nombre">Por favor escribe tu nombre.</div>
+          </div>
+          <div class="field-group">
+            <label>¿Asistirás?</label>
+            <div class="radio-group">
+              <div class="radio-opt">
+                <input type="radio" name="asistencia" id="si" value="Sí asisto">
+                <label for="si">Sí, con mucho gusto</label>
+              </div>
+              <div class="radio-opt">
+                <input type="radio" name="asistencia" id="no" value="No puedo asistir">
+                <label for="no">Lo siento, no podré</label>
+              </div>
+            </div>
+            <div class="error-msg" id="err-asi">Por favor indica si asistirás.</div>
+          </div>
+          <div class="field-group">
+            <label>¿Vas con niños?</label>
+            <div class="radio-group">
+              <div class="radio-opt">
+                <input type="radio" name="ninos" id="ninos-si" value="Sí" onchange="toggleNinos(true)">
+                <label for="ninos-si">Sí</label>
+              </div>
+              <div class="radio-opt">
+                <input type="radio" name="ninos" id="ninos-no" value="No" onchange="toggleNinos(false)">
+                <label for="ninos-no">No</label>
+              </div>
+            </div>
+            <div class="error-msg" id="err-ninos">Por favor indica si vas con niños.</div>
+          </div>
+
+          <div class="field-group" id="cuantos-ninos-group" style="display:none;">
+            <label for="cuantos-ninos">¿Cuántos niños?</label>
+            <input type="number" id="cuantos-ninos" min="1" max="10" placeholder="Número de niños" style="font-size:16px;width:100%;padding:13px 14px;border:0.5px solid #b8c8a0;border-radius:1px;background:#fff;color:#3a5230;font-family:Lato,sans-serif;outline:none;">
+          </div>
+
+          <div class="field-group">
+            <label for="acompanante">¿Vas acompañado? Escribe su nombre</label>
+            <input type="text" id="acompanante" placeholder="Nombre de tu acompañante (opcional)" autocomplete="off">
+          </div>
+
+          <button class="submit-btn" onclick="enviar()">Confirmar</button>
+        </div>
+
+        <div class="success-msg" id="success">
+          <div class="success-check">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3a5230" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="success-title">¡Gracias!</div>
+          <p class="success-text" id="success-text"></p>
+        </div>
       </div>
-      <input type="file" id="fileCamera" accept="image/*" capture="user" hidden>
-      <input type="file" id="fileGallery" accept="image/*" hidden>
-      <p class="photo-note">Usa una foto real y natural, de frente y con buena luz. No se aceptan imágenes generadas con IA.</p>
-      <label class="check">
-        <input type="checkbox" id="honest">
-        <span>Confirmo que es una foto real mía, sin IA y sin filtros.</span>
-      </label>
-      <div class="err" id="honestErr" style="display:none">Confirma que tu foto es real.</div>
-    </aside>
 
-    <!-- Campos -->
-    <main>
-      <fieldset>
-        <legend>Sobre ti</legend>
-        <div class="field" data-f="nombre">
-          <label for="nombre">Nombre completo</label>
-          <input type="text" id="nombre" autocomplete="name">
-          <div class="err">Escribe tu nombre completo.</div>
-        </div>
-        <div class="field" data-f="apodo">
-          <label for="apodo">Seudónimo <span class="hint">¿Cómo te gusta que te llamen?</span></label>
-          <input type="text" id="apodo">
-          <div class="err">Escribe cómo te gusta que te llamen.</div>
-        </div>
-        <div class="field" data-f="nacimiento">
-          <label for="nacimiento">Fecha de nacimiento <span class="hint">Día, mes y año</span></label>
-          <input type="date" id="nacimiento" max="">
-          <div class="err">Elige tu fecha de nacimiento completa.</div>
-        </div>
-      </fieldset>
+      <!-- Leaf divider -->
+      <svg class="leaf-divider" height="20" viewBox="0 0 140 20" aria-hidden="true">
+        <line x1="0" y1="10" x2="48" y2="10" stroke="#b8943a" stroke-width="0.7" opacity="0.6"/>
+        <ellipse cx="60" cy="10" rx="8" ry="4" fill="#5a7840" opacity="0.7" transform="rotate(-10 60 10)"/>
+        <ellipse cx="70" cy="10" rx="7" ry="3.5" fill="#7a9a58" opacity="0.65" transform="rotate(8 70 10)"/>
+        <circle cx="65" cy="10" r="2" fill="#b8943a" opacity="0.5"/>
+        <line x1="92" y1="10" x2="140" y2="10" stroke="#b8943a" stroke-width="0.7" opacity="0.6"/>
+      </svg>
 
-      <fieldset>
-        <legend>Contacto</legend>
-        <div class="row">
-          <div class="field" data-f="movil">
-            <label for="movil">Teléfono móvil</label>
-            <input type="tel" id="movil" autocomplete="tel" inputmode="tel">
-            <div class="err">Escribe un número de móvil válido.</div>
+      <!-- Details: fecha y hora discreta, lugar protagonista -->
+      <div class="details-block">
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5a7840" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
           </div>
-          <div class="field" data-f="casa">
-            <label for="casa">Teléfono de casa</label>
-            <input type="tel" id="casa" inputmode="tel">
-            <div class="err">Escribe un número válido.</div>
+          <div>
+            <span class="detail-label">Sábado, 12 de diciembre de 2026 · 12 del mediodía</span>
           </div>
         </div>
-        <div class="field" data-f="domicilio">
-          <label for="domicilio">Domicilio actual <span class="hint">Calle, número, colonia, ciudad y código postal</span></label>
-          <textarea id="domicilio" autocomplete="street-address"></textarea>
-          <div class="err">Escribe tu domicilio actual.</div>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Tu lugar en la sociedad</legend>
-        <div class="field" data-f="ocupacion">
-          <label for="ocupacion">Ocupación</label>
-          <input type="text" id="ocupacion">
-          <div class="err">Escribe tu ocupación.</div>
-        </div>
-        <div class="field" data-f="sociedad">
-          <label for="sociedad">Sociedad a la que perteneces</label>
-          <input type="text" id="sociedad">
-          <div class="err">Escribe tu sociedad.</div>
-        </div>
-        <div class="field" data-f="reto">
-          <label for="reto">Reto de impacto <span class="hint">Ejemplo: Stripper - Diva</span></label>
-          <input type="text" id="reto">
-          <div class="err">Escribe tu reto de impacto.</div>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Quién te invitó</legend>
-        <div class="row">
-          <div class="field" data-f="invNombre">
-            <label for="invNombre">Nombre de quien te invitó</label>
-            <input type="text" id="invNombre">
-            <div class="err">Escribe el nombre de quien te invitó.</div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5a7840" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+            </svg>
           </div>
-          <div class="field" data-f="invNumero">
-            <label for="invNumero">Número de quien te invitó</label>
-            <input type="tel" id="invNumero" inputmode="tel">
-            <div class="err">Escribe un número válido.</div>
+          <div>
+            <span class="detail-label">Lugar</span>
+            <span class="detail-value">Finca La Roca<br>Vereda de Quiuza<br>Choachí, Cundinamarca</span>
           </div>
         </div>
-      </fieldset>
-
-      <div class="submit-row">
-        <button type="button" class="primary" id="btnSave">Guardar y descargar PDF y Excel</button>
+        <a class="map-link" href="https://maps.google.com/maps?q=4.5680748%2C-73.9250443&z=17&hl=es" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          Cómo llegar
+        </a>
       </div>
-      <div class="status" id="status" role="status" aria-live="polite"></div>
-    </main>
-  </div>
 
-  <section class="directory">
-    <div class="dir-head">
-      <div>
-        <h2>Registros de esta sesión</h2>
-        <p>Cada registro que guardes aparece aquí. Puedes volver a descargarlo.</p>
+      <!-- Lluvia de sobres -->
+      <div class="sobres-block">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b8943a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <polyline points="2,4 12,13 22,4"/>
+        </svg>
+        <p class="sobres-title">Lluvia de sobres</p>
+        <p class="sobres-text">
+          Tu presencia es nuestro mayor regalo.<br>
+          Si deseas obsequiarnos algo,<br>
+          un sobre será más que suficiente.
+        </p>
       </div>
-      <button type="button" id="btnAllXlsx" disabled>Descargar Excel con todos</button>
-    </div>
-    <div id="list"><p class="empty">Todavía no hay registros guardados.</p></div>
-  </section>
-</div>
+
+      <!-- Leaf divider -->
+      <svg class="leaf-divider" height="20" viewBox="0 0 140 20" aria-hidden="true">
+        <line x1="0" y1="10" x2="48" y2="10" stroke="#b8943a" stroke-width="0.7" opacity="0.6"/>
+        <ellipse cx="60" cy="10" rx="8" ry="4" fill="#5a7840" opacity="0.7" transform="rotate(-10 60 10)"/>
+        <ellipse cx="70" cy="10" rx="7" ry="3.5" fill="#7a9a58" opacity="0.65" transform="rotate(8 70 10)"/>
+        <circle cx="65" cy="10" r="2" fill="#b8943a" opacity="0.5"/>
+        <line x1="92" y1="10" x2="140" y2="10" stroke="#b8943a" stroke-width="0.7" opacity="0.6"/>
+      </svg>
+
+      <!-- Countdown -->
+      <div class="countdown">
+        <div class="countdown-label">Faltan</div>
+        <div class="countdown-grid">
+          <div class="cd-unit">
+            <span class="cd-num" id="cd-days">—</span>
+            <div class="cd-lbl">días</div>
+          </div>
+          <div class="cd-sep">·</div>
+          <div class="cd-unit">
+            <span class="cd-num" id="cd-hours">—</span>
+            <div class="cd-lbl">horas</div>
+          </div>
+          <div class="cd-sep">·</div>
+          <div class="cd-unit">
+            <span class="cd-num" id="cd-mins">—</span>
+            <div class="cd-lbl">min</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="esperamos" style="margin-top:20px;">¡Los esperamos!</p>
+
+
+
+      <div class="footer">
+        <div class="footer-names">Edier &amp; Ángela Rocío</div>
+        <div class="footer-date">12 · 12 · 2026 — Choachí, Cundinamarca</div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end card-inner -->
+</div><!-- end card -->
 
 <script>
-(function () {
-  var TITLE = "Directorio Sociedad 80 - Corvis Unita";
-  var records = [];
-  var photoData = null; // { dataUrl, w, h }
 
-  var $ = function (id) { return document.getElementById(id); };
-  var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-
-  // Fecha máxima = hoy
-  var t = new Date();
-  $("nacimiento").max = t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
-
-  /* ---------- Foto ---------- */
-  $("btnCamera").onclick = function () { $("fileCamera").click(); };
-  $("btnGallery").onclick = function () { $("fileGallery").click(); };
-  $("fileCamera").onchange = $("fileGallery").onchange = function (e) {
-    var file = e.target.files && e.target.files[0];
-    if (file) loadPhoto(file);
-    e.target.value = "";
-  };
-
-  function loadPhoto(file) {
-    var url = URL.createObjectURL(file);
-    var img = new Image();
-    img.onload = function () {
-      var max = 900, w = img.naturalWidth, h = img.naturalHeight;
-      var s = Math.min(1, max / Math.max(w, h));
-      var cw = Math.round(w * s), ch = Math.round(h * s);
-      var c = document.createElement("canvas");
-      c.width = cw; c.height = ch;
-      c.getContext("2d").drawImage(img, 0, 0, cw, ch);
-      photoData = { dataUrl: c.toDataURL("image/jpeg", 0.88), w: cw, h: ch };
-      URL.revokeObjectURL(url);
-      $("preview").src = photoData.dataUrl;
-      $("frame").classList.add("has-photo");
-      $("frame").classList.remove("invalid");
-      $("frameWrap").classList.remove("invalid");
-    };
-    img.onerror = function () { setStatus("No se pudo leer la imagen. Prueba con otra foto.", true); };
-    img.src = url;
+function updateCountdown() {
+  var w = new Date('2026-12-12T12:00:00');
+  var n = new Date();
+  var d = w - n;
+  if (d <= 0) {
+    ['cd-days','cd-hours','cd-mins'].forEach(function(id){ document.getElementById(id).textContent='0'; });
+    return;
   }
+  document.getElementById('cd-days').textContent = Math.floor(d/86400000);
+  document.getElementById('cd-hours').textContent = Math.floor((d%86400000)/3600000);
+  document.getElementById('cd-mins').textContent = Math.floor((d%3600000)/60000);
+}
+updateCountdown();
+setInterval(updateCountdown, 60000);
 
-  /* ---------- Validación ---------- */
-  var phoneOk = function (v) { return v.replace(/\D/g, "").length >= 8; };
-  var rules = {
-    nombre: function (v) { return v.trim().split(/\s+/).length >= 2; },
-    apodo: function (v) { return v.trim().length > 0; },
-    nacimiento: function (v) { return /^\d{4}-\d{2}-\d{2}$/.test(v); },
-    movil: phoneOk,
-    casa: function (v) { return v.trim() === "" || phoneOk(v); },
-    domicilio: function (v) { return v.trim().length >= 6; },
-    ocupacion: function (v) { return v.trim().length > 0; },
-    sociedad: function (v) { return v.trim().length > 0; },
-    reto: function (v) { return v.trim().length > 0; },
-    invNombre: function (v) { return v.trim().length > 0; },
-    invNumero: phoneOk
-  };
-
-  function validate() {
-    var firstBad = null, ok = true;
-    if (!photoData) {
-      ok = false; firstBad = $("frame");
-      $("frame").classList.add("invalid"); $("frameWrap").classList.add("invalid");
-    }
-    if (!$("honest").checked) {
-      ok = false; $("honestErr").style.display = "block"; firstBad = firstBad || $("honest");
-    } else { $("honestErr").style.display = "none"; }
-    Object.keys(rules).forEach(function (k) {
-      var el = $(k), wrap = el.closest(".field");
-      var good = rules[k](el.value);
-      wrap.classList.toggle("invalid", !good);
-      if (!good) { ok = false; firstBad = firstBad || el; }
-    });
-    if (firstBad) {
-      firstBad.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (firstBad.focus && firstBad.tagName !== "DIV") firstBad.focus({ preventScroll: true });
-    }
-    return ok;
-  }
-
-  Object.keys(rules).forEach(function (k) {
-    $(k).addEventListener("input", function () {
-      if (rules[k]($(k).value)) $(k).closest(".field").classList.remove("invalid");
-    });
+document.getElementById('nombre').addEventListener('input', function(){
+  document.getElementById('err-nombre').classList.remove('visible');
+});
+document.querySelectorAll('input[name="asistencia"]').forEach(function(r){
+  r.addEventListener('change', function(){
+    document.getElementById('err-asi').classList.remove('visible');
   });
-  $("honest").addEventListener("change", function () {
-    if ($("honest").checked) $("honestErr").style.display = "none";
-  });
+});
 
-  /* ---------- Utilidades ---------- */
-  function fechaLarga(iso) {
-    if (!iso) return "";
-    var p = iso.split("-");
-    return parseInt(p[2], 10) + " de " + MESES[parseInt(p[1], 10) - 1] + " de " + p[0];
-  }
-  function slug(s) {
-    return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_|_$/g, "") || "registro";
-  }
-  function setStatus(msg, bad) {
-    var s = $("status"); s.textContent = msg; s.classList.toggle("bad", !!bad);
-  }
-  function collect() {
-    var g = function (k) { return $(k).value.trim(); };
-    return {
-      id: Date.now(),
-      foto: photoData,
-      nombre: g("nombre"), apodo: g("apodo"),
-      nacimiento: g("nacimiento"), nacimientoTexto: fechaLarga(g("nacimiento")),
-      movil: g("movil"), casa: g("casa"),
-      domicilio: g("domicilio"), ocupacion: g("ocupacion"),
-      invNombre: g("invNombre"), invNumero: g("invNumero"),
-      sociedad: g("sociedad"), reto: g("reto"),
-      registrado: new Date().toLocaleString("es-MX")
-    };
-  }
+function toggleNinos(show) {
+  document.getElementById('cuantos-ninos-group').style.display = show ? 'block' : 'none';
+  if (!show) document.getElementById('cuantos-ninos').value = '';
+  document.getElementById('err-ninos').classList.remove('visible');
+}
 
-  /* ---------- Excel ---------- */
-  var HEADERS = ["Nombre completo","Seudónimo","Fecha de nacimiento","Teléfono móvil","Teléfono de casa",
-                 "Domicilio actual","Ocupación","Nombre de quien invitó","Número de quien invitó",
-                 "Sociedad","Reto de impacto","Fecha de registro"];
-  function rowOf(r) {
-    return [r.nombre, r.apodo, r.nacimientoTexto, r.movil, r.casa || "", r.domicilio, r.ocupacion,
-            r.invNombre, r.invNumero, r.sociedad, r.reto, r.registrado];
-  }
-  function writeXlsx(rows, filename) {
-    var ws = XLSX.utils.aoa_to_sheet([HEADERS].concat(rows));
-    ws["!cols"] = [28,18,24,16,16,40,22,26,20,22,26,20].map(function (w) { return { wch: w }; });
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Directorio");
-    XLSX.writeFile(wb, filename);
-  }
-  function downloadXlsx(r) { writeXlsx([rowOf(r)], "Directorio_Sociedad80_" + slug(r.nombre) + ".xlsx"); }
-  function downloadAllXlsx() { writeXlsx(records.map(rowOf), "Directorio_Sociedad80_completo.xlsx"); }
+function enviar() {
+  var nombre = document.getElementById('nombre').value.trim();
+  var asi = document.querySelector('input[name="asistencia"]:checked');
+  var ninos = document.querySelector('input[name="ninos"]:checked');
+  var ok = true;
 
-  /* ---------- PDF ---------- */
-  function downloadPdf(r) {
-    var jsPDF = window.jspdf.jsPDF;
-    var doc = new jsPDF({ unit: "mm", format: "a4" });
-    var W = 210, M = 16;
-    var ACC = [123, 30, 59], INK = [30, 27, 46], MUT = [94, 88, 115];
+  if (!nombre) { document.getElementById('err-nombre').classList.add('visible'); ok=false; }
+  if (!asi)    { document.getElementById('err-asi').classList.add('visible'); ok=false; }
+  if (!ninos)  { document.getElementById('err-ninos').classList.add('visible'); ok=false; }
+  if (!ok) return;
 
-    // Encabezado
-    doc.setFillColor(ACC[0], ACC[1], ACC[2]);
-    doc.rect(0, 0, W, 36, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("times", "bold"); doc.setFontSize(24);
-    doc.text("Directorio Sociedad 80", M, 18);
-    doc.setFont("times", "italic"); doc.setFontSize(15);
-    doc.text("Corvis Unita", M, 27);
+  var asiste = asi.value === 'Sí asisto';
+  var llevaNinos = ninos.value;
+  var cuantosNinos = llevaNinos === 'Sí' ? (document.getElementById('cuantos-ninos').value || '0') : '0';
+  var acompanante = document.getElementById('acompanante').value.trim();
 
-    // Foto (4:5, ajustada sin deformar)
-    var bx = M, by = 46, bw = 56, bh = 70;
-    doc.setDrawColor(INK[0], INK[1], INK[2]); doc.setLineWidth(0.4);
-    doc.rect(bx, by, bw, bh);
-    if (r.foto) {
-      var ratio = r.foto.w / r.foto.h, pw = bw, ph = bw / ratio;
-      if (ph > bh) { ph = bh; pw = bh * ratio; }
-      doc.addImage(r.foto.dataUrl, "JPEG", bx + (bw - pw) / 2, by + (bh - ph) / 2, pw, ph);
-    }
+  var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScg8q_I6I5agZ2kKudYJm90TGmq7gpBCdnNeBXNRU5-Qk91IQ/formResponse';
 
-    // Datos junto a la foto
-    var x = bx + bw + 12, colW = W - M - x, y = by + 4;
-    function field(px, py, w, label, value) {
-      doc.setFont("helvetica", "bold"); doc.setFontSize(8.5);
-      doc.setTextColor(MUT[0], MUT[1], MUT[2]);
-      doc.text(label, px, py);
-      doc.setFont("helvetica", "normal"); doc.setFontSize(11.5);
-      doc.setTextColor(INK[0], INK[1], INK[2]);
-      var lines = doc.splitTextToSize(value || "-", w);
-      doc.text(lines, px, py + 5.5);
-      return py + 5.5 + lines.length * 5 + 5;
-    }
-    doc.setFont("times", "bold"); doc.setFontSize(18);
-    doc.setTextColor(INK[0], INK[1], INK[2]);
-    var nl = doc.splitTextToSize(r.nombre, colW);
-    doc.text(nl, x, y + 4);
-    y += nl.length * 7.5 + 2;
-    doc.setFont("times", "italic"); doc.setFontSize(13);
-    doc.setTextColor(ACC[0], ACC[1], ACC[2]);
-    doc.text("Seudónimo: " + r.apodo, x, y + 3);
-    y += 12;
-    y = field(x, y, colW, "Fecha de nacimiento", r.nacimientoTexto);
-    y = field(x, y, colW, "Ocupación", r.ocupacion);
+  var fd = new FormData();
+  fd.append('entry.1645349144', nombre);
+  fd.append('entry.1151902753', asi.value);
+  fd.append('entry.2023575312', llevaNinos);
+  fd.append('entry.904223635', cuantosNinos);
+  fd.append('entry.2024601112', acompanante);
+  fetch(FORM_URL, { method:'POST', mode:'no-cors', body:fd })
+    .then(function(){ mostrarExito(asiste); })
+    .catch(function(){ mostrarExito(asiste); });
+}
 
-    // Resto de campos
-    var cy = Math.max(by + bh, y) + 10;
-    doc.setDrawColor(207, 200, 218); doc.setLineWidth(0.3);
-    doc.line(M, cy - 5, W - M, cy - 5);
-    var half = (W - 2 * M - 10) / 2;
-    var a = field(M, cy, half, "Teléfono móvil", r.movil);
-    var b = field(M + half + 10, cy, half, "Teléfono de casa", r.casa);
-    cy = Math.max(a, b);
-    cy = field(M, cy, W - 2 * M, "Domicilio actual", r.domicilio);
-    a = field(M, cy, half, "Sociedad", r.sociedad);
-    b = field(M + half + 10, cy, half, "Reto de impacto", r.reto);
-    cy = Math.max(a, b);
-    doc.line(M, cy - 2, W - M, cy - 2);
-    cy += 4;
-    a = field(M, cy, half, "Invitó (nombre)", r.invNombre);
-    b = field(M + half + 10, cy, half, "Invitó (número)", r.invNumero);
-
-    // Pie
-    doc.setFont("helvetica", "normal"); doc.setFontSize(8.5);
-    doc.setTextColor(MUT[0], MUT[1], MUT[2]);
-    doc.text(TITLE + "  |  Registrado el " + r.registrado, M, 288);
-
-    doc.save("Directorio_Sociedad80_" + slug(r.nombre) + ".pdf");
-  }
-
-  /* ---------- Lista ---------- */
-  function renderList(newId) {
-    var list = $("list");
-    list.innerHTML = "";
-    $("btnAllXlsx").disabled = records.length === 0;
-    if (!records.length) {
-      var p = document.createElement("p"); p.className = "empty";
-      p.textContent = "Todavía no hay registros guardados."; list.appendChild(p); return;
-    }
-    records.slice().reverse().forEach(function (r) {
-      var e = document.createElement("div"); e.className = "entry" + (r.id === newId ? " new" : "");
-      var img = document.createElement("img"); img.src = r.foto.dataUrl; img.alt = "Foto de " + r.nombre;
-      var info = document.createElement("div");
-      var nm = document.createElement("div"); nm.className = "nm"; nm.textContent = r.nombre;
-      var mt = document.createElement("div"); mt.className = "meta";
-      mt.textContent = r.apodo + " - " + r.ocupacion + " - " + r.sociedad;
-      info.appendChild(nm); info.appendChild(mt);
-      var acts = document.createElement("div"); acts.className = "acts";
-      var bp = document.createElement("button"); bp.type = "button"; bp.textContent = "PDF";
-      bp.onclick = function () { downloadPdf(r); };
-      var bx = document.createElement("button"); bx.type = "button"; bx.textContent = "Excel";
-      bx.onclick = function () { downloadXlsx(r); };
-      acts.appendChild(bp); acts.appendChild(bx);
-      e.appendChild(img); e.appendChild(info); e.appendChild(acts);
-      list.appendChild(e);
-    });
-  }
-
-  /* ---------- Guardar ---------- */
-  function resetForm() {
-    ["nombre","apodo","nacimiento","movil","casa","domicilio","ocupacion","sociedad","reto","invNombre","invNumero"]
-      .forEach(function (k) { $(k).value = ""; });
-    $("honest").checked = false;
-    photoData = null; $("preview").removeAttribute("src");
-    $("frame").classList.remove("has-photo");
-  }
-
-  $("btnSave").onclick = function () {
-    setStatus("");
-    if (!validate()) { setStatus("Revisa los campos marcados en rojo.", true); return; }
-    if (!window.jspdf || !window.XLSX) {
-      setStatus("No se cargaron las librerías de PDF y Excel. Revisa tu conexión a internet y recarga la página.", true);
-      return;
-    }
-    var btn = $("btnSave"); btn.disabled = true;
-    var r = collect();
-    try {
-      downloadPdf(r);
-      setTimeout(function () {
-        try { downloadXlsx(r); } catch (err) { setStatus("El PDF se descargó, pero falló el Excel: " + err.message, true); }
-        records.push(r);
-        renderList(r.id);
-        resetForm();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        if (!$("status").classList.contains("bad")) setStatus("Listo. Se guardó el registro de " + r.apodo + " y se descargaron el PDF y el Excel.");
-        btn.disabled = false;
-      }, 600);
-    } catch (err) {
-      setStatus("No se pudo crear el PDF: " + err.message, true);
-      btn.disabled = false;
-    }
-  };
-
-  $("btnAllXlsx").onclick = function () { if (records.length) downloadAllXlsx(); };
-})();
+function mostrarExito(asiste) {
+  document.getElementById('rsvp-form').style.display = 'none';
+  document.getElementById('success-text').innerHTML = asiste
+    ? 'Tu respuesta fue recibida.<br>Edier y Ángela Rocío están muy emocionados<br>de contar contigo en este día.'
+    : 'Lamentamos que no puedas acompañarnos,<br>pero te llevamos en el corazón<br>en este día tan especial.';
+  document.getElementById('success').classList.add('visible');
+}
 </script>
 </body>
 </html>
